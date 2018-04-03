@@ -24,7 +24,7 @@ if __name__ == "__main__":
     redirect_uri = "https://localhost.deadheaven.com/uri"
 
     # the scope required for our API requests
-    scope = r'user-read-recently-played'
+    scope = ["user-read-recently-played"]
 
     # Request URLs for Spotify
     request_authorization_url = "https://accounts.spotify.com/authorize"
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     print('Go to %s and authorize access.' % authorization_url)
 
-    authorization_response = input('Paste the full returned URL here: ')
+    authorization_response = raw_input('Paste the full returned URL here: ')
     print("Auth response URL: '%s'" % authorization_response)
 
     token = oauth.fetch_token(
@@ -50,3 +50,4 @@ if __name__ == "__main__":
 
     bucket = os.getenv("SPOTIFY_BUCKET_NAME")
     spot.save_token(token)
+
