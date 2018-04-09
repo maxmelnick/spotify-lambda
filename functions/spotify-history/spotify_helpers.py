@@ -84,8 +84,13 @@ def read_s3_file(date):
         logger.info("Reading history file for %s" % date)
         content_object = s3.Object(bucket, "%s/%s.json" % (path, date))
         file_content = content_object.get()['Body'].read().decode('utf-8')
-        json_content = json.loads(file_content)
-        return json_content
+        records = file_content.splitlines()
+        content = []
+        for record in records:
+            content.append(json.loads(record))
+        # json_content = json.loads(file_content)
+        # return json_content
+        return content
 
 
 def write_s3_file(data, date):
@@ -94,5 +99,8 @@ def write_s3_file(data, date):
     bucket = os.getenv("SPOTIFY_BUCKET_NAME")
     path = os.getenv("SPOTIFY_BUCKET_PATH")
     s3 = boto3.client('s3')
-    data = json.dumps(data)
-    s3.put_object(Bucket=bucket, Key="%s/%s.json" % (path, date), Body=data)
+    # data = json.dumps(data, indent=0)
+    outData = ""
+    for record in data:
+        outData = outData + json.dumps(record) + "\n"
+    s3.put_object(Bucket=bucket, Key="%s/%s.json" % (path, date), Body=outData)
